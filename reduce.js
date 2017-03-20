@@ -11,7 +11,7 @@ module.exports = (data, tile, writeData, done) => {
   const unique = {}
 
   for (let feature of data.qatiles.osm.features) {
-    if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
+    if (feature.geometry.type === 'LineString') {
       // Only find buildings
       if (!feature.properties.highway) { continue }
 
@@ -23,18 +23,29 @@ module.exports = (data, tile, writeData, done) => {
 
       // Must intersect within extent
       if (turf.intersect(feature, extent)) {
-        let duplicate = false
+        let duplicates = 0
         feature = turf.truncate(feature)
 
         // Detect duplicate nodes (must intersect both previous & current)
         turf.coordReduce(feature, (previousCoord, currentCoord) => {
-          if (unique[previousCoord.join(',')] && unique[currentCoord.join(',')]) duplicate = true
+          const previousId = unique[previousCoord.join(',')]
+          const currentId = unique[currentCoord.join(',')]
+          // Must have unique ideas based on the same way
+          if (previousId && currentId && previousId === currentId) {
+            duplicates++
+          }
           return currentCoord
         })
         // Add coordinates to unique
-        turf.coordEach(feature, coord => unique[coord.join(',')] = true)
+        turf.coordEach(feature, coord => {
+          const key = coord.join(',')
+          unique[key] = feature.properties['@id']
+        })
+        // Ignore ways with less than 5 coordinates
+        if (feature.geometry.coordinates.length < 5) continue
 
-        if (duplicate) features.push(feature)
+        // Only show duplicates with greater than 50% overlap
+        if (duplicates / feature.geometry.coordinates.length > 0.50) features.push(feature)
       }
     }
   }
