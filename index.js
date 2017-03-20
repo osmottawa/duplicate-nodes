@@ -9,6 +9,7 @@ const extent = './extents/thailand.geojson'
 const qatiles = 'thailand.mbtiles'
 const days = 200
 const users = []
+const overlap = 0.2 // % of duplicate nodes
 
 // Results
 const edits = {}
@@ -23,7 +24,8 @@ const options = {
   mapOptions: {
     days,
     extent: geojson,
-    users
+    users,
+    overlap
   }
 }
 

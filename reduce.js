@@ -4,6 +4,7 @@ const invariant = require('@turf/invariant')
 const days = global.mapOptions.days
 const extent = global.mapOptions.extent
 const users = global.mapOptions.users
+const overlap = global.mapOptions.overlap
 
 module.exports = (data, tile, writeData, done) => {
   const features = []
@@ -44,8 +45,8 @@ module.exports = (data, tile, writeData, done) => {
         // Ignore ways with less than 5 coordinates
         if (feature.geometry.coordinates.length < 5) continue
 
-        // Only show duplicates with greater than 50% overlap
-        if (duplicates / feature.geometry.coordinates.length > 0.50) features.push(feature)
+        // Only show duplicates with greater than % overlap
+        if (duplicates / feature.geometry.coordinates.length > overlap) features.push(feature)
       }
     }
   }
