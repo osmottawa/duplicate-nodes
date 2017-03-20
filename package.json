@@ -1,0 +1,19 @@
+{
+  "name": "duplicate-nodes",
+  "version": "1.0.0",
+  "description": "Tile Reduce script to detect duplicate nodes from OSM Roads",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Denis Carriere <@DenisCarriere>",
+  "license": "MIT",
+  "dependencies": {
+    "@turf/invariant": "^3.13.0",
+    "@turf/meta": "^3.13.0",
+    "@turf/turf": "^3.13.2",
+    "load-json-file": "^2.0.0",
+    "tile-reduce": "^3.1.1",
+    "write-json-file": "^2.0.0"
+  }
+}
